@@ -21,18 +21,17 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>, // private jwtService: JwtService,
-    private jwtService: JwtService,
+    // private jwtService: JwtService,
     private userService: UserService,
   ) {}
 
   async addNewProduct(productInfo: ProductModel): Promise<Product | null> {
-    const { name, price, skuId, userId } = productInfo;
-    const userRawObject = await this.userService.getUserById(userId);
+    const { name, price, skuId } = productInfo;
+    // const userRawObject = await this.userService.getUserById(userId);
     const productData = this.productRepository.create({
       name,
       price,
       skuId,
-      user: userRawObject,
     });
     const result = await this.productRepository.save(productData);
     return result;

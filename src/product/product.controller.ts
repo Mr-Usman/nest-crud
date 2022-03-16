@@ -22,9 +22,8 @@ export class ProductController {
     @Body('name') name: string,
     @Body('skuId') skuId: string,
     @Body('price') price: string,
-    @Body('userId') userId: string,
   ) {
-    const productObject = { name, skuId, price, userId };
+    const productObject = { name, skuId, price };
     const result = this.productService.addNewProduct(productObject);
     return result;
   }

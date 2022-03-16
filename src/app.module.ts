@@ -5,9 +5,21 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { configObject } from './orm.config';
 import { ProductModule } from './product/product.module';
+import { OrderModule } from './orders/order.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(configObject), UserModule, ProductModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot(configObject),
+    UserModule,
+    ProductModule,
+    OrderModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
