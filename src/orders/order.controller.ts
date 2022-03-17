@@ -9,6 +9,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Put,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { JwtAuthGuard } from '../user/jwt.guard';
@@ -37,9 +38,33 @@ export class OrderController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteSingleOrder(@Param('id') id: string) {
+    const result = this.orderService.deleteOrderById(id);
+    return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  async updateSingleOrder(
+    @Param('id') orderId: string,
+    @Body('productId') product: any,
+  ) {
+    const result = this.orderService.updateOrderById(orderId, product);
+    return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('/details/:id')
   async getOrderDetails(@Param('id') id: string) {
     const result = this.orderService.getOrderDetails(id);
+    return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  async getAllOrderDetails() {
+    const result = this.orderService.getAllOrdersWithDetails();
     return result;
   }
 }
