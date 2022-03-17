@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from '../../src/user/user.service';
 import { Repository, createQueryBuilder } from 'typeorm';
 // import { User } from './entities/user.entity';
 // import { UserModel } from './user.model';
@@ -18,6 +19,7 @@ export class OrderService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>, // private jwtService: JwtService,
+    private userService: UserService,
   ) {}
 
   async addNewOrder(orderInfo): Promise<Order | null> {

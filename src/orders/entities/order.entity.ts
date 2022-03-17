@@ -14,9 +14,9 @@ import { BaseEntity } from '../../base-entity';
 @Entity({ name: 'Order' })
 @ObjectType()
 export class Order extends BaseEntity {
-  @ManyToOne(() => User, (user) => user.order)
+  @ManyToOne(() => User, (user) => user.order, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Product, (product) => product.order)
+  @ManyToOne(() => Product, (product) => product.order, { onDelete: 'CASCADE' })
   product: Product;
 }

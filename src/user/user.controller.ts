@@ -8,6 +8,8 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Put,
+  Request,
 } from '@nestjs/common';
 import { JwtAuthGuard } from './jwt.guard';
 import { UserService } from './user.service';
@@ -27,9 +29,44 @@ export class UserController {
     return result;
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  getAllUsers() {
+    const result = this.userService.getAllUsers();
+    return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  updateUser(
+    @Body('username') username: string,
+    @Body('newPassword') newPassword: string,
+    @Body('oldPassword') oldPassword: string,
+    @Param('id') id: string,
+  ) {
+    const updateUserObject = { id, username, newPassword, oldPassword };
+    const result = this.userService.updateUser(updateUserObject);
+    return result;
+  }
+
   @Post('login')
   loginUser(@Body('email') email: string, @Body('pass') password: string) {
     const result = this.userService.loginUser(email, password);
+    return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: string) {
+    const result = this.userService.deleteUserById(id);
+    return result;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('order/:id')
+  async getUsersOrders(@Param('id') id: string, @Request() req) {
+    const { id: userId } = req.user;
+    const result = this.userService.getUserAllOrders(id, userId);
     return result;
   }
 }

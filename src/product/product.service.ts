@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 // import { User } from './entities/user.entity';
 // import { UserModel } from './user.model';
 import * as bcrypt from 'bcrypt';
@@ -34,6 +34,64 @@ export class ProductService {
       skuId,
     });
     const result = await this.productRepository.save(productData);
+    return result;
+  }
+
+  async updateProduct(productObject) {
+    // Promise<Product | string | null>
+    const { id, name, skuId, price } = productObject;
+    const productData = await this.productRepository.findOne({ where: { id } });
+    if (productData) {
+      const updatedProductData = await getConnection()
+        .createQueryBuilder()
+        .update(Product)
+        .set({ name, skuId, price })
+        .where('id = :id', { id })
+        .execute();
+      if (updatedProductData.affected) {
+        return { message: 'product updated successfully' };
+      } else {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'Product could not updated',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } else {
+      throw new NotFoundException('Product not found');
+    }
+  }
+
+  async deleteProductById(id: string) {
+    const productData = await this.productRepository.findOne({ where: { id } });
+    if (productData) {
+      const deletedProduct = await getConnection()
+        .createQueryBuilder()
+        .delete()
+        .from(Product)
+        .where('id = :id', { id })
+        .execute();
+      // const result = await this.productRepository.delete(id);
+      if (deletedProduct.affected) {
+        return { message: 'product deleted successfully' };
+      } else {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            error: 'Product could not deleted',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } else {
+      throw new NotFoundException('Product not found');
+    }
+  }
+
+  async getAllProducts(): Promise<Product[]> {
+    const result = await this.productRepository.find();
     return result;
   }
 }

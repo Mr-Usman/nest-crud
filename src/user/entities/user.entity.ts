@@ -1,6 +1,6 @@
 import { ObjectType } from '@nestjs/graphql';
 import { Order } from 'src/orders/entities/order.entity';
-import { Product } from 'src/product/entities/product.entity';
+// import { Product } from 'src/product/entities/product.entity';
 import {
   Entity,
   Column,
