@@ -11,6 +11,8 @@ import {
   Put,
   Request,
 } from '@nestjs/common';
+import { UserOrderResponsePayload } from './dto/user-input';
+import { User } from './entities/user.entity';
 import { JwtAuthGuard } from './jwt.guard';
 import { UserService } from './user.service';
 
@@ -64,9 +66,12 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('order/:id')
-  async getUsersOrders(@Param('id') id: string, @Request() req) {
+  async getUsersOrders(
+    @Param('id') id: string,
+    @Request() req, // : Promise<UserOrderPayload>
+  ) {
     const { id: userId } = req.user;
-    const result = this.userService.getUserAllOrders(id, userId);
+    const result = await this.userService.getUserAllOrders(id, userId);
     return result;
   }
 }

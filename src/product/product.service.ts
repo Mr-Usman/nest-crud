@@ -15,6 +15,7 @@ import { Product } from './entities/product.entity';
 import { userInfo } from 'os';
 import { ProductModel } from './product.model';
 import { UserService } from 'src/user/user.service';
+import { createNewProduct } from './dto/create-product';
 
 @Injectable()
 export class ProductService {
@@ -93,5 +94,29 @@ export class ProductService {
   async getAllProducts(): Promise<Product[]> {
     const result = await this.productRepository.find();
     return result;
+  }
+
+  async getProductById(id: string): Promise<Product | null> {
+    const productData = await this.productRepository.findOne({
+      where: { id },
+      relations: ['order'],
+    });
+    if (productData) {
+      return productData;
+    } else {
+      throw new NotFoundException('Product not found');
+    }
+  }
+
+  async getAllProdOrders(): Promise<Product[] | null> {
+    const productData = await this.productRepository.find({
+      select: ['id', 'name', 'price', 'skuId'],
+      relations: ['order'],
+    });
+    if (productData) {
+      return productData;
+    } else {
+      throw new NotFoundException('Product not found');
+    }
   }
 }

@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getConnection, createQueryBuilder } from 'typeorm';
+import { Repository, getConnection } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserModel } from './user.model';
 import * as bcrypt from 'bcrypt';
@@ -112,16 +112,21 @@ export class UserService {
   }
 
   async getAllUsers() {
-    // const users = await this.userRepository.find();
-    const users = await this.userRepository
-      .createQueryBuilder('User')
-      .select(['User.username', 'User.email'])
-      .getMany();
+    const users = await this.userRepository.find({
+      select: ['email', 'username'],
+      relations: ['order', 'order.product', 'order.user'],
+    });
+    // const users = this.userRepository
+    //   .createQueryBuilder('User')
+    //   .select(['User.username', 'User.email'])
+    //   .getMany();
     return users;
   }
 
   async deleteUserById(id: string) {
-    const userData = await this.userRepository.findOne({ where: { id } });
+    const userData = await this.userRepository.findOne({
+      where: { id },
+    });
     // console.log('deleted product:', productData);
     if (userData) {
       const deletedUser = await getConnection()
@@ -147,16 +152,23 @@ export class UserService {
     }
   }
 
-  async getUserAllOrders(id: string, userId: string) {
-    const userData = await this.userRepository.findOne({ where: { id } });
-    if (userData) {
-      const result = await createQueryBuilder('User') // FROM Order
-        .innerJoinAndSelect('User.order', 'Order') // Inner join User
-        .where('User.id = :id', { id: userId }) // WHERE User.id = userId
-        .getOne();
-      return result;
-    } else {
-      throw new NotFoundException('User not found');
-    }
+  async getUserAllOrders(id: string, userId: string): Promise<User | any> {
+    const userData = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['order'],
+    });
+    return userData;
+    // // return { user: userData };
+    // if (userData) {
+    //   const result = await createQueryBuilder('User') // FROM Order
+    //     .innerJoinAndSelect('User.order', 'Order') // Inner join User
+    //     .where('User.id = :id', { id: userId }) // WHERE User.id = userId
+    //     .getOne();
+
+    //   console.log('query result:', result);
+    //   return { user: result };
+    // } else {
+    //   throw new NotFoundException('User not found');
+    // }
   }
 }

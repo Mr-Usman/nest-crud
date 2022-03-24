@@ -1,11 +1,9 @@
 import {
   Controller,
   Get,
-  Header,
   Post,
   Body,
   Param,
-  Patch,
   Delete,
   UseGuards,
   Put,

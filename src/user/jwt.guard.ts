@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 
@@ -13,11 +14,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     super();
   }
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const ctx = context.switchToHttp().getRequest();
-    if (!ctx.headers.authorization) {
+    // const ctx = context.switchToHttp().getRequest();
+    const ctx = GqlExecutionContext.create(context).getContext();
+    // console.log('ctx:', ctx);
+    // console.log('token getting:', ctx.req.headers.authorization);
+    if (!ctx.req.headers.authorization) {
       return false;
     }
-    ctx.user = await this.validateToken(ctx.headers.authorization);
+    ctx.user = await this.validateToken(ctx.req.headers.authorization);
     return true;
   }
   async validateToken(auth: string) {

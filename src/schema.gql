@@ -1,0 +1,89 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Product {
+  id: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String
+  skuId: String
+  price: String
+  order: [Order!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Order {
+  id: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+  product: Product
+}
+
+type User {
+  id: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  username: String
+  email: String
+  order: [Order!]!
+}
+
+type LoginResponsePayload {
+  accessToken: String!
+}
+
+type createUserResponsePayload {
+  username: String!
+  email: String!
+}
+
+type ResponsePayload {
+  status: Float
+  error: String
+  message: String
+  name: String
+}
+
+type Query {
+  getAllUsers: [User!]!
+  getUserOrder(userOrder: UserOrderDetails!): User!
+  getProductOrderByProductId(productOrder: ProductOrderDetails!): Product!
+  getAllProductOrders: [Product!]!
+}
+
+input UserOrderDetails {
+  id: String!
+}
+
+input ProductOrderDetails {
+  productId: String!
+}
+
+type Mutation {
+  lognIn(user: UserInput!): LoginResponsePayload
+  createUser(createUser: createUserInput!): createUserResponsePayload!
+  addNewProduct(createProduct: createNewProduct!): Product!
+}
+
+input UserInput {
+  email: String!
+  password: String!
+}
+
+input createUserInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input createNewProduct {
+  name: String!
+  skuId: String!
+  price: String!
+}

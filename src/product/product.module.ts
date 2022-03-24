@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/user/user.module';
 import { Product } from './entities/product.entity';
 import { ProductController } from './product.controller';
+import { ProductResolver } from './product.resolver';
 import { ProductService } from './product.service';
 
 @Module({
@@ -20,6 +21,6 @@ import { ProductService } from './product.service';
     }),
   ],
   controllers: [ProductController],
-  providers: [ProductService],
+  providers: [ProductService, ProductResolver],
 })
 export class ProductModule {}
