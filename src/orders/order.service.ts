@@ -8,10 +8,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '../../src/user/user.service';
 import { Repository, createQueryBuilder, getConnection } from 'typeorm';
-// import { User } from './entities/user.entity';
-// import { UserModel } from './user.model';
-// import { JwtService } from '@nestjs/jwt';
-// import { UserService } from 'src/user/user.service';
 import { Order } from './entities/order.entity';
 
 @Injectable()
@@ -86,7 +82,6 @@ export class OrderService {
   }
 
   async updateOrderById(orderId: string, product: any) {
-    // Promise<Product | string | null>
     const orderData = await this.orderRepository.findOne({
       where: { id: orderId },
     });
